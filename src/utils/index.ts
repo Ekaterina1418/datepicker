@@ -4,9 +4,9 @@ export type DayCell = {
 };
 
 
-export const buildMonthGrid = (viewDate: Date, firstDayOfWeek = 0): DayCell[] => {
+export const buildMonthGrid = (viewDate: Date, firstDayOfWeek = 1): DayCell[] => {
 	const year = viewDate.getFullYear();
-	const month = viewDate.getMinutes();
+	const month = viewDate.getMonth();
 	const first = new Date(year, month, 1)
 	const last = new Date(year, month + 1 , 0)
 
