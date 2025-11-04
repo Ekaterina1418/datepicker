@@ -1,9 +1,9 @@
 <template>
 	<div class="calendar">
 		<div class="cal-header">
-			<button class="btn">></button>
-			 <div class="cal-title"></div>
 			<button class="btn"><</button>
+			 <div class="cal-title">{{ monthTitle }}</div>
+			<button class="btn">></button>
 		</div>
   <div class="cal-grid">
 	<div v-for="(cell,index) in grid" :key="index" class="cell">
@@ -27,6 +27,10 @@ const emit = defineEmits(['update:modelValue','select'])
 
 const viewDate = ref(new Date())
 const grid = computed<DayCell[]>(() => buildMonthGrid( viewDate.value, props.firstDayOfWeek))
+
+const monthTitle = computed(() => {
+	return viewDate.value.toLocaleDateString(props.locale, { month: 'long', year: 'numeric' })
+})
 </script>
 
 <style scoped>
