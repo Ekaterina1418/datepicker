@@ -1,5 +1,5 @@
 <template>
- <DatePicker v-model="selectedDate" :firstDayOfWeek="1" locale="ru-RU"/>
+<DatePicker v-model="selectedDate" :firstDayOfWeek="1" locale="ru-RU"/>
  <p>{{ selectedDate }}</p>
 </template>
 

@@ -5,6 +5,11 @@
       <div class="cal-title">{{ monthTitle }}</div>
       <button class="btn" @click="nextMonth">></button>
     </div>
+    <div class="week-days">
+      <div v-for="(day, i) in weekDays" :key="i" class="week-day">
+        {{ day }}
+      </div>
+    </div>
     <div class="cal-grid">
       <div
         v-for="(cell, index) in grid"
@@ -19,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { buildMonthGrid, type DayCell } from "../utils/index";
+import { computed, ref, watchEffect } from "vue";
+import { buildMonthGrid, getWeekDays, type DayCell } from "../utils/index";
 
 const props = defineProps<{
   modelValue: string;
@@ -43,6 +48,12 @@ const monthTitle = computed(() => {
   });
 });
 
+const weekDays = computed(() => {
+  const loc = props.locale || "ru-RU";
+  const first = props.firstDayOfWeek ?? 1;
+  return getWeekDays(loc, first);
+});
+
 const prevMonth = () => {
   const d = new Date(viewDate.value);
   d.setMonth(d.getMonth() - 1);
@@ -58,7 +69,6 @@ const selectDate = (cell: DayCell) => {
   if (!cell.day) return;
   selectedDate.value = cell.date;
   emit("update:modelValue", cell.date?.toISOString().split("T")[0] || "");
-  
 };
 </script>
 
@@ -91,6 +101,19 @@ const selectDate = (cell: DayCell) => {
 }
 .cell {
   height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 2px;
+  font-weight: bold;
+  text-align: center;
+}
+.week-day {
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
