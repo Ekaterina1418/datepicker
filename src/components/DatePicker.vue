@@ -1,65 +1,98 @@
 <template>
-	<div class="calendar">
-		<div class="cal-header">
-			<button class="btn"><</button>
-			 <div class="cal-title">{{ monthTitle }}</div>
-			<button class="btn">></button>
-		</div>
-  <div class="cal-grid">
-	<div v-for="(cell,index) in grid" :key="index" class="cell">
-		<span v-if="cell.day">{{ cell.day }}</span>
-	</div>
+  <div class="calendar">
+    <div class="cal-header">
+      <button class="btn" @click="prevMonth"><</button>
+      <div class="cal-title">{{ monthTitle }}</div>
+      <button class="btn" @click="nextMonth">></button>
+    </div>
+    <div class="cal-grid">
+      <div
+        v-for="(cell, index) in grid"
+        :key="index"
+        class="cell"
+        @click="selectDate(cell)"
+      >
+        <span v-if="cell.day">{{ cell.day }}</span>
+      </div>
+    </div>
   </div>
-	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { buildMonthGrid, type DayCell } from '../utils/index'
+import { computed, ref } from "vue";
+import { buildMonthGrid, type DayCell } from "../utils/index";
 
-const props =  defineProps<{
-modelValue: string
-locale:string
-firstDayOfWeek: number
-}>()
+const props = defineProps<{
+  modelValue: string;
+  locale: string;
+  firstDayOfWeek: number;
+}>();
 
-const emit = defineEmits(['update:modelValue','select'])
+const emit = defineEmits(["update:modelValue"]);
 
-const viewDate = ref(new Date())
-const grid = computed<DayCell[]>(() => buildMonthGrid( viewDate.value, props.firstDayOfWeek))
+const viewDate = ref(new Date());
+const selectedDate = ref(props.modelValue ? new Date(props.modelValue) : null);
+const grid = computed<DayCell[]>(() =>
+  buildMonthGrid(viewDate.value, props.firstDayOfWeek)
+);
 
 const monthTitle = computed(() => {
-	return viewDate.value.toLocaleDateString(props.locale, { month: 'long', year: 'numeric' })
-})
+  return viewDate.value.toLocaleDateString(props.locale, {
+    month: "long",
+    year: "numeric",
+  });
+});
+
+const prevMonth = () => {
+  const d = new Date(viewDate.value);
+  d.setMonth(d.getMonth() - 1);
+  viewDate.value = d;
+};
+const nextMonth = () => {
+  const d = new Date(viewDate.value);
+  d.setMonth(d.getMonth() + 1);
+  viewDate.value = d;
+};
+
+const selectDate = (cell: DayCell) => {
+  if (!cell.day) return;
+  selectedDate.value = cell.date;
+  emit("update:modelValue", cell.date?.toISOString().split("T")[0] || "");
+  
+};
 </script>
 
 <style scoped>
 .calendar {
-	width: 300px;
-	border: 1px solid #e0e0e0;
-	border-radius: 8px;
-	padding: 8px;
-	user-select: none;
-	outline: none;
+  width: 300px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px;
+  user-select: none;
+  outline: none;
 }
 .cal-header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 .btn {
-  background:transparent;
-  border:1px solid #ddd;
-  border-radius:4px;
-  padding:4px 8px;
-  cursor:pointer;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 2px;
 }
-.cell { height: 34px; display:flex; align-items:center; justify-content:center; }
-
+.cell {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>
