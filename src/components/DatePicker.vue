@@ -114,6 +114,7 @@ const selectDate = (cell: DayCell) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 .active-cell {
   background-color: #1976d2;
