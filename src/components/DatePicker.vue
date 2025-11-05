@@ -1,9 +1,13 @@
 <template>
   <div class="calendar">
     <div class="cal-header">
-      <button class="btn" @click="prevMonth"><</button>
+      <button class="btn" @click="prevMonth">
+        <span class="material-symbols-outlined"> arrow_left </span>
+      </button>
       <div class="cal-title">{{ monthTitle }}</div>
-      <button class="btn" @click="nextMonth">></button>
+      <button class="btn" @click="nextMonth">
+        <span class="material-symbols-outlined"> arrow_right </span>
+      </button>
     </div>
     <div class="week-days">
       <div v-for="(day, i) in weekDays" :key="i" class="week-day">
@@ -15,6 +19,7 @@
         v-for="(cell, index) in grid"
         :key="index"
         class="cell"
+        :class="{ 'active-cell': isSelectedDate(cell) }"
         @click="selectDate(cell)"
       >
         <span v-if="cell.day">{{ cell.day }}</span>
@@ -24,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref } from "vue";
 import { buildMonthGrid, getWeekDays, type DayCell } from "../utils/index";
 
 const props = defineProps<{
@@ -36,7 +41,14 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue"]);
 
 const viewDate = ref(new Date());
-const selectedDate = ref(props.modelValue ? new Date(props.modelValue) : null);
+const selectedDate = ref<Date | null>(
+  props.modelValue ? new Date(props.modelValue) : new Date()
+);
+
+const isSelectedDate = (cell: DayCell) => {
+  if (!cell.date || !selectedDate.value) return false;
+  return cell.date.toDateString() === selectedDate.value.toDateString();
+};
 const grid = computed<DayCell[]>(() =>
   buildMonthGrid(viewDate.value, props.firstDayOfWeek)
 );
@@ -68,7 +80,7 @@ const nextMonth = () => {
 const selectDate = (cell: DayCell) => {
   if (!cell.day) return;
   selectedDate.value = cell.date;
-  emit("update:modelValue", cell.date?.toISOString().split("T")[0] || "");
+  emit("update:modelValue", cell.date?.toLocaleDateString("ru-RU"));
 };
 </script>
 
@@ -89,9 +101,7 @@ const selectDate = (cell: DayCell) => {
 }
 .btn {
   background: transparent;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 4px 8px;
+  border: none;
   cursor: pointer;
 }
 .cal-grid {
@@ -105,6 +115,11 @@ const selectDate = (cell: DayCell) => {
   align-items: center;
   justify-content: center;
 }
+.active-cell {
+  background-color: #1976d2;
+  color: white;
+  border-radius: 4px;
+}
 .week-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -117,5 +132,8 @@ const selectDate = (cell: DayCell) => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.material-symbols-outlined {
+	font-size: 30px;
 }
 </style>
