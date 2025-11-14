@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DatePicker from "./components/DatePicker.vue";
+import DatePicker from "./components/DatePicker/DatePicker.vue";
 const selectedDate = ref("");
 const locale = ref("ru-RU");
 </script>
