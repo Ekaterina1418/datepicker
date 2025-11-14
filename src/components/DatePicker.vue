@@ -1,14 +1,6 @@
 <template>
   <div class="calendar">
-    <div class="cal-header">
-      <button class="btn" @click="prevMonth">
-        <span class="material-symbols-outlined"> arrow_left </span>
-      </button>
-      <div class="cal-title">{{ monthTitle }}</div>
-      <button class="btn" @click="nextMonth">
-        <span class="material-symbols-outlined"> arrow_right </span>
-      </button>
-    </div>
+    <DatepickerHeader :month-title="monthTitle" @prev-month="prevMonth" @next-month="nextMonth"/>
     <div class="week-days">
       <div v-for="(day, i) in weekDays" :key="i" class="week-day">
         {{ day }}
@@ -31,6 +23,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { buildMonthGrid, getWeekDays, type DayCell } from "../utils/index";
+import DatepickerHeader from './DatePicker/DatepickerHeader.vue';
 
 const props = defineProps<{
   modelValue: string;
@@ -93,17 +86,7 @@ const selectDate = (cell: DayCell) => {
   user-select: none;
   outline: none;
 }
-.cal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
+
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
