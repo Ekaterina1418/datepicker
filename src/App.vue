@@ -4,15 +4,7 @@
     <p class="datepicker-date">{{ selectedDate }}</p>
     <div class="datepicker-wrapper">
       <DatePicker v-model="selectedDate" :firstDayOfWeek="1" :locale="locale" />
-      <div class="custom-select">
-        <select id="locale" class="select-locale" v-model="locale">
-          <option value="ru-RU">Русский</option>
-          <option value="en-US">English</option>
-        </select>
-        <span class="material-symbols-outlined arrow-icon"
-          >arrow_drop_down</span
-        >
-      </div>
+      <LanguageSwitcher @update:lang="changeLanguage" />
     </div>
   </section>
 </template>
@@ -20,8 +12,25 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import DatePicker from "./components/DatePicker/DatePicker.vue";
+import LanguageSwitcher from "./components/LanguageSwitcher/LanguageSwitcher.vue";
 const selectedDate = ref("");
 const locale = ref("ru-RU");
+
+const changeLanguage = (lang: string) => {
+  switch (lang) {
+    case "ru":
+      locale.value = "ru-Ru";
+      break;
+    case "en":
+      locale.value = "en-US";
+      break;
+    case "sv":
+      locale.value = "sv-SE";
+      break;
+    default:
+      locale.value = "ru-Ru";
+  }
+};
 </script>
 
 <style scoped>
@@ -34,26 +43,5 @@ const locale = ref("ru-RU");
 }
 .datepicker-title {
   margin-bottom: 30px;
-}
-.custom-select {
-  position: relative;
-  display: inline-block;
-}
-.select-locale {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 30px;
-  padding: 10px 60px;
-  border-radius: 4px;
-}
-.custom-select .arrow-icon {
-  position: absolute;
-  right: 4px;
-  top: 20px;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 30px;
-  color: #333;
 }
 </style>

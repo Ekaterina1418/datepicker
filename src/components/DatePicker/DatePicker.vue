@@ -1,21 +1,25 @@
 <template>
   <div class="calendar">
-    <DatepickerHeader :month-title="monthTitle" @prev-month="prevMonth" @next-month="nextMonth"/>
-    <DatepickerGrid :grid="grid" :selected-date="selectedDate" @select="selectDate"/>
-    <div class="week-days">
-      <div v-for="(day, i) in weekDays" :key="i" class="week-day">
-        {{ day }}
-      </div>
-    </div>
-   
+    <DatepickerHeader
+      :month-title="monthTitle"
+      @prev-month="prevMonth"
+      @next-month="nextMonth"
+    />
+    <DatePickerWeekDays :week-days="weekDays" />
+    <DatepickerGrid
+      :grid="grid"
+      :selected-date="selectedDate"
+      @select="selectDate"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { buildMonthGrid, getWeekDays, type DayCell } from "../../utils/index";
-import DatepickerHeader from '../DatePicker/DatepickerHeader.vue';
-import DatepickerGrid from '../DatePicker/DatepickerGrid.vue';
+import DatepickerHeader from "../DatePicker/DatepickerHeader.vue";
+import DatepickerGrid from "../DatePicker/DatepickerGrid.vue";
+import DatePickerWeekDays from "./DatePickerWeekDays.vue";
 
 const props = defineProps<{
   modelValue: string;
@@ -74,8 +78,6 @@ const selectDate = (cell: DayCell) => {
   user-select: none;
   outline: none;
 }
-
-
 .week-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -90,6 +92,6 @@ const selectDate = (cell: DayCell) => {
   justify-content: center;
 }
 .material-symbols-outlined {
-	font-size: 30px;
+  font-size: 30px;
 }
 </style>
